@@ -15,14 +15,7 @@ async function getTasksById(id: string) {
 
 async function getAllTasks() {
   const data = await db.tasks.all();
-  return data.map((item) => [
-    {
-      name: item.value.name,
-      status: item.value.status,
-      createdAt: item.value.createdAt,
-      id: item.value.id,
-    },
-  ]);
+  return data.map((item) => item.value);
 }
 
 async function createTask(data: CreateTaskSchema) {
