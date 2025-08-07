@@ -5,6 +5,7 @@ import {
   UpdateTaskSchema,
   TaskSchema,
 } from "#schemas/tasks.js";
+import { randomUUID } from "crypto";
 
 async function exists(id: string) {
   return await db.tasks.has(id);
@@ -20,8 +21,8 @@ async function getAllTasks() {
 }
 
 async function createTask(data: CreateTaskSchema): Promise<TaskSchema> {
-  const createdAt = Date.now();
-  const id = createdAt.toString();
+  const createdAt = new Date().toISOString();
+  const id = randomUUID();
   const status: TaskStatus = "pending";
 
   const newTask: TaskSchema = {

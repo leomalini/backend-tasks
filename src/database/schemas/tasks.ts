@@ -6,7 +6,7 @@ export interface TaskSchema {
   id: string;
   name: string;
   status: TaskStatus;
-  createdAt: number;
+  createdAt: string;
 }
 
 export type CreateTaskSchema = Omit<TaskSchema, "id" | "createdAt" | "status">;

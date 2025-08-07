@@ -1,4 +1,5 @@
 import { db } from "#database";
+import { randomUUID } from "crypto";
 async function exists(id) {
     return await db.tasks.has(id);
 }
@@ -10,8 +11,8 @@ async function getAllTasks() {
     return data.map((item) => item.value);
 }
 async function createTask(data) {
-    const createdAt = Date.now();
-    const id = createdAt.toString();
+    const createdAt = new Date().toISOString();
+    const id = randomUUID();
     const status = "pending";
     const newTask = {
         id,
