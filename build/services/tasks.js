@@ -10,14 +10,25 @@ async function getAllTasks() {
     return data.map((item) => item.value);
 }
 async function createTask(data) {
-    const createdAt = new Date();
-    const id = createdAt.getTime().toString();
+    const createdAt = Date.now();
+    const id = createdAt.toString();
     const status = "pending";
-    return await db.tasks.set(id, { ...data, createdAt, status });
+    const newTask = {
+        id,
+        ...data,
+        createdAt,
+        status,
+    };
+    return await db.tasks.set(id, newTask);
 }
 async function updateTask(id, data) {
     const task = await getTasksById(id);
-    return await db.tasks.set(id, { ...task, ...data });
+    if (!task) {
+        throw new Error(`Task with id ${id} not found`);
+    }
+    const updatedTask = { ...task, ...data };
+    await db.tasks.set(id, updatedTask);
+    return updatedTask;
 }
 async function deleteTask(id) {
     return await db.tasks.delete(id);

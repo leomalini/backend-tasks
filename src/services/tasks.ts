@@ -3,6 +3,7 @@ import {
   CreateTaskSchema,
   TaskStatus,
   UpdateTaskSchema,
+  TaskSchema,
 } from "#schemas/tasks.js";
 
 async function exists(id: string) {
@@ -18,18 +19,31 @@ async function getAllTasks() {
   return data.map((item) => item.value);
 }
 
-async function createTask(data: CreateTaskSchema) {
-  const createdAt = new Date();
-  const id = createdAt.getTime().toString();
+async function createTask(data: CreateTaskSchema): Promise<TaskSchema> {
+  const createdAt = Date.now();
+  const id = createdAt.toString();
   const status: TaskStatus = "pending";
 
-  return await db.tasks.set(id, { ...data, createdAt, status, id });
+  const newTask: TaskSchema = {
+    id,
+    ...data,
+    createdAt,
+    status,
+  };
+
+  return await db.tasks.set(id, newTask);
 }
 
 async function updateTask(id: string, data: UpdateTaskSchema) {
   const task = await getTasksById(id);
 
-  return await db.tasks.set(id, { ...task, ...data });
+  if (!task) {
+    throw new Error(`Task with id ${id} not found`);
+  }
+
+  const updatedTask = { ...task, ...data };
+  await db.tasks.set(id, updatedTask);
+  return updatedTask;
 }
 
 async function deleteTask(id: string) {
